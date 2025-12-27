@@ -40,7 +40,17 @@ export default function Contact() {
       
       setTimeout(() => setSubmitted(false), 5000);
     } catch (error) {
-      console.error("Error submitting contact form:", error);
+      // Fallback: Open email client when API is not available
+      console.log("Using mailto fallback");
+      const subject = encodeURIComponent(`Zapytanie od ${formData.name}`);
+      const body = encodeURIComponent(
+        `Imię: ${formData.name}\nEmail: ${formData.email}\nTelefon: ${formData.phone}\n\nWiadomość:\n${formData.message}`
+      );
+      window.location.href = `mailto:kontakt@komfortpremium.pl?subject=${subject}&body=${body}`;
+      
+      setSubmitted(true);
+      setFormData({ name: "", email: "", phone: "", message: "" });
+      setTimeout(() => setSubmitted(false), 5000);
     } finally {
       setLoading(false);
     }

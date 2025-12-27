@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useLanguage } from '@/lib/language-context';
+import { calculatePriceClient } from '@/lib/pricing';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -565,8 +566,10 @@ export default function Booking() {
 			const data = await response.json();
 			setEstimatedPrice(data.estimatedPrice);
 		} catch (error) {
-			console.error('Error calculating estimate:', error);
-			setEstimatedPrice('Error calculating price');
+			// Fallback to client-side calculation when API is not available
+			console.log('Using client-side price calculation');
+			const priceResult = calculatePriceClient(formData.to);
+			setEstimatedPrice(`${priceResult.min} - ${priceResult.max}`);
 		} finally {
 			setLoading(false);
 		}
